@@ -1,30 +1,61 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="container">
+    <div class="half">
+      <Filters
+        :filterPosts="filterPosts"
+        :search="search"/>
+    </div>
+    <div class="col-9">
+      <Posts :posts="posts"/>
+    </div>
   </div>
-  <router-view/>
+
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Filters from './components/Filters.vue'
+import Posts from './components/Posts.vue'
+import MOCK_DATA from './MOCK_DATA.json'
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  components: {
+    Filters,
+    Posts
+  },
+  data () {
+    return {
+      posts: MOCK_DATA
+    }
+  },
+  methods: {
+    filterPosts (catName) {
+      this.resetPosts();
+      if (catName !== 'All') {
+        this.posts = this.posts.filter((post) => {
+        return post.category === catName
+      })
+      }
+    },
+    search (term) {
+      this.resetPosts();
+      this.posts = this.posts.filter(post => {
+        return post.title.toLowerCase().includes(term.toLowerCase())
+      })
+    },
+    resetPosts () {
+      this.posts = MOCK_DATA;
     }
   }
+}
+</script>
+
+<style scoped>
+.container {
+  display: flex;
+  margin: 20px;
+
+}
+.half {
+  width: 40%;
 }
 </style>
